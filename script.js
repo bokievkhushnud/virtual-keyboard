@@ -72,7 +72,7 @@ const keysList = Object.keys(keyMapping);
 const listRow1 = ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'];
 const listRow2 = ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete'];
 const listRow3 = ['CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter'];
-const listRow4 = ['ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'];
+const listRow4 = ['ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ShiftRight', 'ArrowUp',];
 const listRow5 = ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight'];
 
 let ctrlPressed = false;
@@ -185,10 +185,15 @@ if (mode === 0) {
 }
 
 function shiftOnClick() {
+  console.log(capsLock);
   for (let i = 0; i < keysList.length; i++) {
     if (keyMapping[keysList[i]].length > 1) {
       const button = document.getElementById(keysList[i]);
-      button.innerHTML = keyMapping[keysList[i]][mode + 1];
+      if (capsLock === true) {
+        button.innerHTML = keyMapping[keysList[i]][mode - 1];
+      } else {
+        button.innerHTML = keyMapping[keysList[i]][mode + 1];
+      }
     }
   }
 }
@@ -215,26 +220,32 @@ function switchLanguage() {
 }
 
 function typeLetter(id, char) {
-  let letter = keyMapping[id][mode] || keyMapping[id][0];
+  let letter = char;
+  
 
-  if (letter.length === 1) {
+  if (id === 'Tab') { // Handle the Tab key
+    letter = "    "; // 4 spaces for horizontal indent
+  }
+
+  if (letter.length === 1 || id==="Tab") {
     // Get cursor position
     let cursorPosition = textarea.selectionStart;
-
     // Check if the cursor is inside the textarea
-    if (document.activeElement === textarea) {
+    if (document.activeElement === textarea || event.type === 'click') {
       // Insert the typed character at the current cursor position
       let beforeCursor = textarea.value.slice(0, cursorPosition);
       let afterCursor = textarea.value.slice(cursorPosition);
-      textarea.value = beforeCursor + char + afterCursor;
-      textarea.selectionStart = cursorPosition + 1;
-      textarea.selectionEnd = cursorPosition + 1;
+      textarea.value = beforeCursor + letter + afterCursor;
+      textarea.selectionStart = cursorPosition + letter.length;
+      textarea.selectionEnd = cursorPosition + letter.length;
     } else {
       // Add the typed character to the end of the textarea content
-      textarea.value += char;
+      textarea.value += letter;
     }
+
   }
 }
+
 
 
 function btnOnClick(key) {
@@ -281,14 +292,15 @@ function btnOnClick(key) {
   }
 }
 
-// add event listener to buttons
+
 document.addEventListener('keydown', (event) => {
   const key = event.code;
-  if (keyMapping[key].length > 1) {
+  if (keyMapping[key].length > 1 || key === 'Space' || key === 'Tab') { // Add the check for the Space key
     event.preventDefault();
   }
   btnOnClick(key);
 });
+
 
 document.addEventListener('keyup', (event) => {
   const key = event.code;
@@ -298,8 +310,8 @@ document.addEventListener('keyup', (event) => {
     }
     const button = document.getElementById(key);
     button.classList.remove('active');
-   
-    if (key === 'ShiftLeft' || key === 'ShiftRight' && capsLock === false ) {
+
+    if (key === 'ShiftLeft' || key === 'ShiftRight' && capsLock === false) {
       shiftOffClick();
     }
 
@@ -313,14 +325,17 @@ document.addEventListener('keyup', (event) => {
 });
 
 function buttonClickHandler(event) {
+  event.preventDefault(); // Prevent default behavior
+  const button = event.target;
+  const key = button.id;
+  const textarea = document.getElementById('textarea'); // Replace 'yourTextareaId' with the actual ID of your textarea element
+
+  btnOnClick(key);
+
   setTimeout(() => {
     button.classList.remove("active");
   }, 100);
 
-  const button = event.target;
-  const key = button.id;
-  const textarea = document.getElementById('textarea'); // Replace 'yourTextareaId' with the actual ID of your textarea element
-  btnOnClick(key);
   textarea.focus(); // Set focus to the textarea
-
 }
+
