@@ -250,6 +250,7 @@ buttonsContainer.appendChild(buttonsRow3);
 buttonsContainer.appendChild(buttonsRow4);
 buttonsContainer.appendChild(buttonsRow5);
 
+// using class from ES6
 class Button {
   constructor(id, text,className) {
     this.id = id;
@@ -378,9 +379,6 @@ function typeLetter(id, char) {
   }
 }
 
-
-
-
 function onCapsLock() {
   if (mode === 0) {
     letterKeys = letters[0];
@@ -403,9 +401,6 @@ function offCapsLock() {
     }
   }
 }
-
-
-
 
 function btnOnClick(key) {
   if (key in keyMapping) {
