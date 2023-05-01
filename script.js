@@ -126,6 +126,7 @@ function createButtons(mode) {
     button.setAttribute("class", "button");
     button.id = listRow1[i];
     button.innerHTML = keyMapping[listRow1[i]][mode];
+    button.addEventListener('click', buttonClickHandler);
     buttonsRow1.appendChild(button);
   }
 
@@ -136,6 +137,8 @@ function createButtons(mode) {
     button.id = listRow2[i];
     button.innerHTML = keyMapping[listRow2[i]][mode];
     buttonsRow2.appendChild(button);
+    button.addEventListener('click', buttonClickHandler);
+
   }
 
   // create buttons for row 3
@@ -145,6 +148,8 @@ function createButtons(mode) {
     button.id = listRow3[i];
     button.innerHTML = keyMapping[listRow3[i]][mode];
     buttonsRow3.appendChild(button);
+    button.addEventListener('click', buttonClickHandler);
+
   }
 
   // create buttons for row 4
@@ -154,6 +159,8 @@ function createButtons(mode) {
     button.id = listRow4[i];
     button.innerHTML = keyMapping[listRow4[i]][mode];
     buttonsRow4.appendChild(button);
+    button.addEventListener('click', buttonClickHandler);
+
   }
 
   // create buttons for row 5
@@ -165,6 +172,8 @@ function createButtons(mode) {
       button.innerHTML = " ";
       button.style.width = "300px";
       buttonsRow5.appendChild(button);
+      button.addEventListener('click', buttonClickHandler);
+
       continue;
     }
     const button = document.createElement("button");
@@ -172,6 +181,8 @@ function createButtons(mode) {
     button.id = listRow5[i];
     button.innerHTML = keyMapping[listRow5[i]][mode];
     buttonsRow5.appendChild(button);
+    button.addEventListener('click', buttonClickHandler);
+
   }
   document.body.appendChild(container);
 
@@ -222,11 +233,7 @@ function typeLetter(id, char) {
 }
 
 
-
-// add event listener to buttons
-document.addEventListener('keydown', function (event) {
-  let key = event.code;
-
+function btnOnClick(key) {
   if (key in keyMapping) {
     let button = document.getElementById(key);
     button.classList.add("active");
@@ -276,6 +283,16 @@ document.addEventListener('keydown', function (event) {
     typeLetter(key, button.innerHTML);
 
   }
+
+}
+
+
+
+// add event listener to buttons
+document.addEventListener('keydown', function (event) {
+  let key = event.code;
+  btnOnClick(key);
+
 });
 
 document.addEventListener('keyup', function (event) {
@@ -296,3 +313,12 @@ document.addEventListener('keyup', function (event) {
     }
   }
 });
+
+
+
+function buttonClickHandler(event) {
+  const button = event.target;
+  const key = button.id;
+  btnOnClick(key);
+
+}
