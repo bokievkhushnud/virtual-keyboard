@@ -66,8 +66,10 @@ const keyMapping = {
 };
 
 
+let mode = localStorage.getItem("keyboardMode") || 0;
+mode = parseInt(mode);
+const keys_list = Object.keys(keyMapping);
 
-let mode = 0;
 
 const listRow1 = ["Backquote", "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", "Digit0", "Minus", "Equal", "Backspace"];
 const listRow2 = ["Tab", "KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft", "BracketRight", "Backslash", "Delete"];
@@ -160,7 +162,7 @@ function createButtons(mode) {
       const button = document.createElement("button");
       button.setAttribute("class", "button");
       button.id = listRow5[i];
-      button.innerHTML = "";
+      button.innerHTML = " ";
       button.style.width = "300px";
       buttonsRow5.appendChild(button);
       continue;
@@ -171,15 +173,15 @@ function createButtons(mode) {
     button.innerHTML = keyMapping[listRow5[i]][mode];
     buttonsRow5.appendChild(button);
   }
-
-
-
   document.body.appendChild(container);
 
 }
-createButtons(0);
-
-const keys_list = Object.keys(keyMapping);
+if (mode === 0) {
+  createButtons(0);
+} else {
+  createButtons(0);
+  switchLanguage()
+}
 
 function shiftOnClick() {
   for (let i = 0; i < keys_list.length; i++) {
@@ -208,6 +210,7 @@ function switchLanguage() {
         button.innerHTML = keyMapping[keys_list[i]][mode + 1];
       }
     }
+
   }
 }
 
@@ -255,6 +258,7 @@ document.addEventListener('keydown', function (event) {
         mode = 0;
       }
       switchLanguage();
+      localStorage.setItem("keyboardMode", mode);
     }
 
     if (key === 'CapsLock') {
@@ -270,6 +274,7 @@ document.addEventListener('keydown', function (event) {
     }
 
     typeLetter(key, button.innerHTML);
+
   }
 });
 
