@@ -114,7 +114,7 @@ buttonsContainer.appendChild(buttonsRow3);
 buttonsContainer.appendChild(buttonsRow4);
 buttonsContainer.appendChild(buttonsRow5);
 
-function createButtons() {
+function createButtons(mode) {
   // create buttons for row 1
   for (let i = 0; i < listRow1.length; i++) {
     const button = document.createElement('button');
@@ -176,10 +176,11 @@ function createButtons() {
   }
   document.body.appendChild(container);
 }
+
 if (mode === 0) {
-  createButtons();
+  createButtons(0);
 } else {
-  createButtons();
+  createButtons(0);
   switchLanguage();
 }
 
@@ -214,20 +215,33 @@ function switchLanguage() {
 }
 
 function typeLetter(id, char) {
-  const letter = keyMapping[id][mode] || keyMapping[id][0];
+  let letter = keyMapping[id][mode] || keyMapping[id][0];
+
   if (letter.length === 1) {
-    textarea.value += char;
+    // Get cursor position
+    let cursorPosition = textarea.selectionStart;
+
+    // Check if the cursor is inside the textarea
+    if (document.activeElement === textarea) {
+      // Insert the typed character at the current cursor position
+      let beforeCursor = textarea.value.slice(0, cursorPosition);
+      let afterCursor = textarea.value.slice(cursorPosition);
+      textarea.value = beforeCursor + char + afterCursor;
+      textarea.selectionStart = cursorPosition + 1;
+      textarea.selectionEnd = cursorPosition + 1;
+    } else {
+      // Add the typed character to the end of the textarea content
+      textarea.value += char;
+    }
   }
 }
+
 
 function btnOnClick(key) {
   if (key in keyMapping) {
     const button = document.getElementById(key);
     button.classList.add('active');
 
-    setTimeout(() => {
-      button.classList.remove('active');
-    }, 300);
 
     if (key === 'ShiftLeft' || key === 'ShiftRight') {
       shiftOnClick();
@@ -270,6 +284,9 @@ function btnOnClick(key) {
 // add event listener to buttons
 document.addEventListener('keydown', (event) => {
   const key = event.code;
+  if (keyMapping[key].length > 1) {
+    event.preventDefault();
+  }
   btnOnClick(key);
 });
 
@@ -279,7 +296,10 @@ document.addEventListener('keyup', (event) => {
     if (key === 'CapsLock') {
       return;
     }
-    if (key === 'ShiftLeft' || key === 'ShiftRight') {
+    const button = document.getElementById(key);
+    button.classList.remove('active');
+   
+    if (key === 'ShiftLeft' || key === 'ShiftRight' && capsLock === false ) {
       shiftOffClick();
     }
 
@@ -293,7 +313,14 @@ document.addEventListener('keyup', (event) => {
 });
 
 function buttonClickHandler(event) {
+  setTimeout(() => {
+    button.classList.remove("active");
+  }, 100);
+
   const button = event.target;
   const key = button.id;
+  const textarea = document.getElementById('textarea'); // Replace 'yourTextareaId' with the actual ID of your textarea element
   btnOnClick(key);
+  textarea.focus(); // Set focus to the textarea
+
 }
