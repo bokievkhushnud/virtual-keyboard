@@ -255,64 +255,6 @@ buttonsContainer.appendChild(buttonsRow3);
 buttonsContainer.appendChild(buttonsRow4);
 buttonsContainer.appendChild(buttonsRow5);
 
-// using class from ES6
-class Button {
-  constructor(id, text, className) {
-    this.id = id;
-    this.text = text;
-    this.className = className;
-  }
-
-  createButton() {
-    const button = document.createElement('button');
-    button.setAttribute('class', this.className);
-    button.id = this.id;
-    button.innerHTML = this.text;
-    button.addEventListener('click', buttonClickHandler);
-
-    return button;
-  }
-}
-
-function createButtons(m) {
-  // create buttons for row 1
-  for (let i = 0; i < listRow1.length; i += 1) {
-    const button = new Button(listRow1[i], keyMapping[listRow1[i]][m], 'button').createButton();
-    buttonsRow1.appendChild(button);
-  }
-
-  // create buttons for row 2
-  for (let i = 0; i < listRow2.length; i += 1) {
-    const button = new Button(listRow2[i], keyMapping[listRow2[i]][m], 'button').createButton();
-    buttonsRow2.appendChild(button);
-  }
-
-  // create buttons for row 3
-  for (let i = 0; i < listRow3.length; i += 1) {
-    const button = new Button(listRow3[i], keyMapping[listRow3[i]][m], 'button').createButton();
-    buttonsRow3.appendChild(button);
-  }
-
-  // create buttons for row 4
-  for (let i = 0; i < listRow4.length; i += 1) {
-    const button = new Button(listRow4[i], keyMapping[listRow4[i]][m], 'button').createButton();
-    buttonsRow4.appendChild(button);
-  }
-
-  // create buttons for row 5
-  for (let i = 0; i < listRow5.length; i += 1) {
-    if (keyMapping[listRow5[i]][m] === 'Space') {
-      const button = new Button(listRow5[i], ' ', 'button space_btn').createButton();
-      buttonsRow5.appendChild(button);
-    } else {
-      const button = new Button(listRow5[i], keyMapping[listRow5[i]][m], 'button').createButton();
-
-      buttonsRow5.appendChild(button);
-    }
-  }
-  document.body.appendChild(container);
-}
-
 function switchLanguage() {
   for (let i = 0; i < keysList.length; i += 1) {
     if (keyMapping[keysList[i]].length > 2) {
@@ -453,11 +395,13 @@ function btnOnClick(key, event) {
 
 document.addEventListener('keydown', (event) => {
   const key = event.code;
-  if (keyMapping[key].length > 1 || key === 'Space' || key === 'Tab' || key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown') {
-    // Add the check for the Space key
-    event.preventDefault();
+  if (key in keyMapping) {
+    if (keyMapping[key].length > 1 || key === 'Space' || key === 'Tab' || key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown') {
+      // Add the check for the Space key
+      event.preventDefault();
+    }
+    btnOnClick(key, event);
   }
-  btnOnClick(key, event);
 });
 
 document.addEventListener('keyup', (event) => {
@@ -495,6 +439,65 @@ function buttonClickHandler(event) {
 
   textarea.focus(); // Set focus to the textarea
 }
+
+// using class from ES6
+class Button {
+  constructor(id, text, className) {
+    this.id = id;
+    this.text = text;
+    this.className = className;
+  }
+
+  createButton() {
+    const button = document.createElement('button');
+    button.setAttribute('class', this.className);
+    button.id = this.id;
+    button.innerHTML = this.text;
+    button.addEventListener('click', buttonClickHandler);
+
+    return button;
+  }
+}
+
+function createButtons(m) {
+  // create buttons for row 1
+  for (let i = 0; i < listRow1.length; i += 1) {
+    const button = new Button(listRow1[i], keyMapping[listRow1[i]][m], 'button').createButton();
+    buttonsRow1.appendChild(button);
+  }
+
+  // create buttons for row 2
+  for (let i = 0; i < listRow2.length; i += 1) {
+    const button = new Button(listRow2[i], keyMapping[listRow2[i]][m], 'button').createButton();
+    buttonsRow2.appendChild(button);
+  }
+
+  // create buttons for row 3
+  for (let i = 0; i < listRow3.length; i += 1) {
+    const button = new Button(listRow3[i], keyMapping[listRow3[i]][m], 'button').createButton();
+    buttonsRow3.appendChild(button);
+  }
+
+  // create buttons for row 4
+  for (let i = 0; i < listRow4.length; i += 1) {
+    const button = new Button(listRow4[i], keyMapping[listRow4[i]][m], 'button').createButton();
+    buttonsRow4.appendChild(button);
+  }
+
+  // create buttons for row 5
+  for (let i = 0; i < listRow5.length; i += 1) {
+    if (keyMapping[listRow5[i]][m] === 'Space') {
+      const button = new Button(listRow5[i], ' ', 'button space_btn').createButton();
+      buttonsRow5.appendChild(button);
+    } else {
+      const button = new Button(listRow5[i], keyMapping[listRow5[i]][m], 'button').createButton();
+
+      buttonsRow5.appendChild(button);
+    }
+  }
+  document.body.appendChild(container);
+}
+
 if (mode === 0) {
   createButtons(0);
 } else {
