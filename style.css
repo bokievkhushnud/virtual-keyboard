@@ -1,5 +1,7 @@
 
 body {
+  display: flex;
+  flex-direction: column-reverse;
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
   display: flex;
@@ -56,16 +58,23 @@ body {
   outline: none;
   user-select: none;
   cursor: pointer;
+  transition: all 0.1s ease-in-out;
 }
 
 .button.active {
   background-color: #d0d0d0;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   transform: translateY(1px);
+  border-radius: 10px;
 }
+
+
 
 .space_btn{
   width: 300px;
 }
 
+.switch-language-text{
+  color: rgb(68, 56, 56);
+}
 
